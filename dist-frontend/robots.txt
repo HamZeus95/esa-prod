@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://esa-structural.com/sitemap.xml
+
+# Block admin routes for security
+Disallow: /admin/
+Disallow: /api/
+
+# Allow all public pages
+Allow: /
+Allow: /about
+Allow: /services  
+Allow: /projects
+Allow: /contact
+
+# Crawl delay
+Crawl-delay: 1
