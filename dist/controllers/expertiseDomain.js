@@ -1,8 +1,11 @@
-import { ExpertiseDomain } from '../models/ExpertiseDomain.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteExpertiseDomain = exports.updateExpertiseDomain = exports.createExpertiseDomain = exports.getExpertiseDomainById = exports.getAllExpertiseDomains = void 0;
+const ExpertiseDomain_1 = require("../models/ExpertiseDomain");
 // @desc    Get all expertise domains
 // @route   GET /api/expertise-domains
 // @access  Public
-export const getAllExpertiseDomains = async (req, res) => {
+const getAllExpertiseDomains = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
@@ -12,8 +15,8 @@ export const getAllExpertiseDomains = async (req, res) => {
         const query = {};
         if (isActive !== undefined)
             query.isActive = isActive === 'true';
-        const total = await ExpertiseDomain.countDocuments(query);
-        const domains = await ExpertiseDomain.find(query)
+        const total = await ExpertiseDomain_1.ExpertiseDomain.countDocuments(query);
+        const domains = await ExpertiseDomain_1.ExpertiseDomain.find(query)
             .sort({ order: 1, createdAt: -1 })
             .limit(limit)
             .skip(startIndex);
@@ -39,12 +42,13 @@ export const getAllExpertiseDomains = async (req, res) => {
         });
     }
 };
+exports.getAllExpertiseDomains = getAllExpertiseDomains;
 // @desc    Get single expertise domain
 // @route   GET /api/expertise-domains/:id
 // @access  Public
-export const getExpertiseDomainById = async (req, res) => {
+const getExpertiseDomainById = async (req, res) => {
     try {
-        const domain = await ExpertiseDomain.findById(req.params.id);
+        const domain = await ExpertiseDomain_1.ExpertiseDomain.findById(req.params.id);
         if (!domain) {
             return res.status(404).json({
                 success: false,
@@ -65,10 +69,11 @@ export const getExpertiseDomainById = async (req, res) => {
         });
     }
 };
+exports.getExpertiseDomainById = getExpertiseDomainById;
 // @desc    Create expertise domain
 // @route   POST /api/expertise-domains
 // @access  Private/Admin
-export const createExpertiseDomain = async (req, res) => {
+const createExpertiseDomain = async (req, res) => {
     try {
         const { title, description, icon, iconType, order, isActive } = req.body;
         // Validation
@@ -79,7 +84,7 @@ export const createExpertiseDomain = async (req, res) => {
             });
         }
         // Create expertise domain
-        const domain = new ExpertiseDomain({
+        const domain = new ExpertiseDomain_1.ExpertiseDomain({
             title: title.trim(),
             description: description.trim(),
             icon: icon.trim(),
@@ -103,13 +108,14 @@ export const createExpertiseDomain = async (req, res) => {
         });
     }
 };
+exports.createExpertiseDomain = createExpertiseDomain;
 // @desc    Update expertise domain
 // @route   PUT /api/expertise-domains/:id
 // @access  Private/Admin
-export const updateExpertiseDomain = async (req, res) => {
+const updateExpertiseDomain = async (req, res) => {
     try {
         const { title, description, icon, iconType, order, isActive } = req.body;
-        const domain = await ExpertiseDomain.findById(req.params.id);
+        const domain = await ExpertiseDomain_1.ExpertiseDomain.findById(req.params.id);
         if (!domain) {
             return res.status(404).json({
                 success: false,
@@ -145,19 +151,20 @@ export const updateExpertiseDomain = async (req, res) => {
         });
     }
 };
+exports.updateExpertiseDomain = updateExpertiseDomain;
 // @desc    Delete expertise domain
 // @route   DELETE /api/expertise-domains/:id
 // @access  Private/Admin
-export const deleteExpertiseDomain = async (req, res) => {
+const deleteExpertiseDomain = async (req, res) => {
     try {
-        const domain = await ExpertiseDomain.findById(req.params.id);
+        const domain = await ExpertiseDomain_1.ExpertiseDomain.findById(req.params.id);
         if (!domain) {
             return res.status(404).json({
                 success: false,
                 message: 'Domaine d\'expertise non trouvé'
             });
         }
-        await ExpertiseDomain.findByIdAndDelete(req.params.id);
+        await ExpertiseDomain_1.ExpertiseDomain.findByIdAndDelete(req.params.id);
         res.status(200).json({
             success: true,
             data: null,
@@ -173,4 +180,5 @@ export const deleteExpertiseDomain = async (req, res) => {
         });
     }
 };
+exports.deleteExpertiseDomain = deleteExpertiseDomain;
 //# sourceMappingURL=expertiseDomain.js.map

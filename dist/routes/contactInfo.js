@@ -1,52 +1,43 @@
-import express from 'express';
-import { authenticateToken } from '../middleware/auth.js';
-import { 
-// Combined API for public
-getAllContactInfo, 
-// Email contacts
-getEmailContacts, createEmailContact, updateEmailContact, deleteEmailContact, 
-// Phone contacts
-getPhoneContacts, createPhoneContact, updatePhoneContact, deletePhoneContact, 
-// Location contacts  
-getLocationContacts, createLocationContact, updateLocationContact, deleteLocationContact, 
-// Business hours
-getBusinessHours, createBusinessHours, updateBusinessHours, deleteBusinessHours, 
-// Social media
-getSocialMedia, createSocialMedia, updateSocialMedia, deleteSocialMedia, 
-// WhatsApp contact
-getWhatsAppContact, createOrUpdateWhatsAppContact, deleteWhatsAppContact } from '../controllers/contactInfo.js';
-const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const auth_1 = require("../middleware/auth");
+const contactInfo_1 = require("../controllers/contactInfo");
+const router = express_1.default.Router();
 // Public route for all contact info
-router.get('/all', getAllContactInfo);
+router.get('/all', contactInfo_1.getAllContactInfo);
 // Email Contacts Routes
-router.get('/emails', getEmailContacts);
-router.post('/emails', authenticateToken, createEmailContact);
-router.put('/emails/:id', authenticateToken, updateEmailContact);
-router.delete('/emails/:id', authenticateToken, deleteEmailContact);
+router.get('/emails', contactInfo_1.getEmailContacts);
+router.post('/emails', auth_1.authenticateToken, contactInfo_1.createEmailContact);
+router.put('/emails/:id', auth_1.authenticateToken, contactInfo_1.updateEmailContact);
+router.delete('/emails/:id', auth_1.authenticateToken, contactInfo_1.deleteEmailContact);
 // Phone Contacts Routes
-router.get('/phones', getPhoneContacts);
-router.post('/phones', authenticateToken, createPhoneContact);
-router.put('/phones/:id', authenticateToken, updatePhoneContact);
-router.delete('/phones/:id', authenticateToken, deletePhoneContact);
+router.get('/phones', contactInfo_1.getPhoneContacts);
+router.post('/phones', auth_1.authenticateToken, contactInfo_1.createPhoneContact);
+router.put('/phones/:id', auth_1.authenticateToken, contactInfo_1.updatePhoneContact);
+router.delete('/phones/:id', auth_1.authenticateToken, contactInfo_1.deletePhoneContact);
 // Location Contacts Routes
-router.get('/locations', getLocationContacts);
-router.post('/locations', authenticateToken, createLocationContact);
-router.put('/locations/:id', authenticateToken, updateLocationContact);
-router.delete('/locations/:id', authenticateToken, deleteLocationContact);
+router.get('/locations', contactInfo_1.getLocationContacts);
+router.post('/locations', auth_1.authenticateToken, contactInfo_1.createLocationContact);
+router.put('/locations/:id', auth_1.authenticateToken, contactInfo_1.updateLocationContact);
+router.delete('/locations/:id', auth_1.authenticateToken, contactInfo_1.deleteLocationContact);
 // Business Hours Routes
-router.get('/hours', getBusinessHours);
-router.post('/hours', authenticateToken, createBusinessHours);
-router.put('/hours/:id', authenticateToken, updateBusinessHours);
-router.delete('/hours/:id', authenticateToken, deleteBusinessHours);
+router.get('/hours', contactInfo_1.getBusinessHours);
+router.post('/hours', auth_1.authenticateToken, contactInfo_1.createBusinessHours);
+router.put('/hours/:id', auth_1.authenticateToken, contactInfo_1.updateBusinessHours);
+router.delete('/hours/:id', auth_1.authenticateToken, contactInfo_1.deleteBusinessHours);
 // Social Media Routes
-router.get('/social', getSocialMedia);
-router.post('/social', authenticateToken, createSocialMedia);
-router.put('/social/:id', authenticateToken, updateSocialMedia);
-router.delete('/social/:id', authenticateToken, deleteSocialMedia);
+router.get('/social', contactInfo_1.getSocialMedia);
+router.post('/social', auth_1.authenticateToken, contactInfo_1.createSocialMedia);
+router.put('/social/:id', auth_1.authenticateToken, contactInfo_1.updateSocialMedia);
+router.delete('/social/:id', auth_1.authenticateToken, contactInfo_1.deleteSocialMedia);
 // WhatsApp Contact Routes (Singleton)
-router.get('/whatsapp', getWhatsAppContact);
-router.post('/whatsapp', authenticateToken, createOrUpdateWhatsAppContact);
-router.put('/whatsapp', authenticateToken, createOrUpdateWhatsAppContact);
-router.delete('/whatsapp', authenticateToken, deleteWhatsAppContact);
-export default router;
+router.get('/whatsapp', contactInfo_1.getWhatsAppContact);
+router.post('/whatsapp', auth_1.authenticateToken, contactInfo_1.createOrUpdateWhatsAppContact);
+router.put('/whatsapp', auth_1.authenticateToken, contactInfo_1.createOrUpdateWhatsAppContact);
+router.delete('/whatsapp', auth_1.authenticateToken, contactInfo_1.deleteWhatsAppContact);
+exports.default = router;
 //# sourceMappingURL=contactInfo.js.map

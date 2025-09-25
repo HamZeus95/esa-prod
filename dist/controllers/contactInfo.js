@@ -1,14 +1,17 @@
-import { EmailContact, PhoneContact, LocationContact, BusinessHours, SocialMedia, WhatsAppContact } from '../models/ContactInfo.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteWhatsAppContact = exports.createOrUpdateWhatsAppContact = exports.getWhatsAppContact = exports.deleteSocialMedia = exports.updateSocialMedia = exports.createSocialMedia = exports.getSocialMedia = exports.deleteBusinessHours = exports.updateBusinessHours = exports.createBusinessHours = exports.getBusinessHours = exports.deleteLocationContact = exports.updateLocationContact = exports.createLocationContact = exports.getLocationContacts = exports.deletePhoneContact = exports.updatePhoneContact = exports.createPhoneContact = exports.getPhoneContacts = exports.deleteEmailContact = exports.updateEmailContact = exports.createEmailContact = exports.getEmailContacts = exports.getAllContactInfo = void 0;
+const ContactInfo_1 = require("../models/ContactInfo");
 // Combined ContactInfo API for public access
-export const getAllContactInfo = async (req, res) => {
+const getAllContactInfo = async (req, res) => {
     try {
         const [emails, phones, locations, hours, social, whatsapp] = await Promise.all([
-            EmailContact.find({ isVisible: true }).sort({ order: 1 }),
-            PhoneContact.find({ isVisible: true }).sort({ order: 1 }),
-            LocationContact.find({ isVisible: true }).sort({ order: 1 }),
-            BusinessHours.find({ isVisible: true }).sort({ order: 1 }),
-            SocialMedia.find({ isVisible: true }).sort({ order: 1 }),
-            WhatsAppContact.findOne({ isVisible: true })
+            ContactInfo_1.EmailContact.find({ isVisible: true }).sort({ order: 1 }),
+            ContactInfo_1.PhoneContact.find({ isVisible: true }).sort({ order: 1 }),
+            ContactInfo_1.LocationContact.find({ isVisible: true }).sort({ order: 1 }),
+            ContactInfo_1.BusinessHours.find({ isVisible: true }).sort({ order: 1 }),
+            ContactInfo_1.SocialMedia.find({ isVisible: true }).sort({ order: 1 }),
+            ContactInfo_1.WhatsAppContact.findOne({ isVisible: true })
         ]);
         res.json({
             success: true,
@@ -30,10 +33,11 @@ export const getAllContactInfo = async (req, res) => {
         });
     }
 };
+exports.getAllContactInfo = getAllContactInfo;
 // Email Contacts Controllers
-export const getEmailContacts = async (req, res) => {
+const getEmailContacts = async (req, res) => {
     try {
-        const emails = await EmailContact.find().sort({ order: 1 });
+        const emails = await ContactInfo_1.EmailContact.find().sort({ order: 1 });
         res.json({
             success: true,
             data: emails
@@ -47,7 +51,8 @@ export const getEmailContacts = async (req, res) => {
         });
     }
 };
-export const createEmailContact = async (req, res) => {
+exports.getEmailContacts = getEmailContacts;
+const createEmailContact = async (req, res) => {
     try {
         const { label, email, isVisible = true, order = 0 } = req.body;
         if (!label || !email) {
@@ -56,7 +61,7 @@ export const createEmailContact = async (req, res) => {
                 message: 'Le label et l\'email sont requis'
             });
         }
-        const emailContact = new EmailContact({
+        const emailContact = new ContactInfo_1.EmailContact({
             label,
             email,
             isVisible,
@@ -76,11 +81,12 @@ export const createEmailContact = async (req, res) => {
         });
     }
 };
-export const updateEmailContact = async (req, res) => {
+exports.createEmailContact = createEmailContact;
+const updateEmailContact = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updatedEmail = await EmailContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        const updatedEmail = await ContactInfo_1.EmailContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!updatedEmail) {
             return res.status(404).json({
                 success: false,
@@ -100,10 +106,11 @@ export const updateEmailContact = async (req, res) => {
         });
     }
 };
-export const deleteEmailContact = async (req, res) => {
+exports.updateEmailContact = updateEmailContact;
+const deleteEmailContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedEmail = await EmailContact.findByIdAndDelete(id);
+        const deletedEmail = await ContactInfo_1.EmailContact.findByIdAndDelete(id);
         if (!deletedEmail) {
             return res.status(404).json({
                 success: false,
@@ -123,10 +130,11 @@ export const deleteEmailContact = async (req, res) => {
         });
     }
 };
+exports.deleteEmailContact = deleteEmailContact;
 // Phone Contacts Controllers
-export const getPhoneContacts = async (req, res) => {
+const getPhoneContacts = async (req, res) => {
     try {
-        const phones = await PhoneContact.find().sort({ order: 1 });
+        const phones = await ContactInfo_1.PhoneContact.find().sort({ order: 1 });
         res.json({
             success: true,
             data: phones
@@ -140,7 +148,8 @@ export const getPhoneContacts = async (req, res) => {
         });
     }
 };
-export const createPhoneContact = async (req, res) => {
+exports.getPhoneContacts = getPhoneContacts;
+const createPhoneContact = async (req, res) => {
     try {
         const { label, phone, isVisible = true, order = 0 } = req.body;
         if (!label || !phone) {
@@ -149,7 +158,7 @@ export const createPhoneContact = async (req, res) => {
                 message: 'Le label et le téléphone sont requis'
             });
         }
-        const phoneContact = new PhoneContact({
+        const phoneContact = new ContactInfo_1.PhoneContact({
             label,
             phone,
             isVisible,
@@ -169,11 +178,12 @@ export const createPhoneContact = async (req, res) => {
         });
     }
 };
-export const updatePhoneContact = async (req, res) => {
+exports.createPhoneContact = createPhoneContact;
+const updatePhoneContact = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updatedPhone = await PhoneContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        const updatedPhone = await ContactInfo_1.PhoneContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!updatedPhone) {
             return res.status(404).json({
                 success: false,
@@ -193,10 +203,11 @@ export const updatePhoneContact = async (req, res) => {
         });
     }
 };
-export const deletePhoneContact = async (req, res) => {
+exports.updatePhoneContact = updatePhoneContact;
+const deletePhoneContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedPhone = await PhoneContact.findByIdAndDelete(id);
+        const deletedPhone = await ContactInfo_1.PhoneContact.findByIdAndDelete(id);
         if (!deletedPhone) {
             return res.status(404).json({
                 success: false,
@@ -216,10 +227,11 @@ export const deletePhoneContact = async (req, res) => {
         });
     }
 };
+exports.deletePhoneContact = deletePhoneContact;
 // Location Contacts Controllers
-export const getLocationContacts = async (req, res) => {
+const getLocationContacts = async (req, res) => {
     try {
-        const locations = await LocationContact.find().sort({ order: 1 });
+        const locations = await ContactInfo_1.LocationContact.find().sort({ order: 1 });
         res.json({
             success: true,
             data: locations
@@ -233,7 +245,8 @@ export const getLocationContacts = async (req, res) => {
         });
     }
 };
-export const createLocationContact = async (req, res) => {
+exports.getLocationContacts = getLocationContacts;
+const createLocationContact = async (req, res) => {
     try {
         const { label, address, coordinates, isVisible = true, order = 0 } = req.body;
         if (!label || !address) {
@@ -242,7 +255,7 @@ export const createLocationContact = async (req, res) => {
                 message: 'Le label et l\'adresse sont requis'
             });
         }
-        const locationContact = new LocationContact({
+        const locationContact = new ContactInfo_1.LocationContact({
             label,
             address,
             coordinates,
@@ -263,11 +276,12 @@ export const createLocationContact = async (req, res) => {
         });
     }
 };
-export const updateLocationContact = async (req, res) => {
+exports.createLocationContact = createLocationContact;
+const updateLocationContact = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updatedLocation = await LocationContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        const updatedLocation = await ContactInfo_1.LocationContact.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!updatedLocation) {
             return res.status(404).json({
                 success: false,
@@ -287,10 +301,11 @@ export const updateLocationContact = async (req, res) => {
         });
     }
 };
-export const deleteLocationContact = async (req, res) => {
+exports.updateLocationContact = updateLocationContact;
+const deleteLocationContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedLocation = await LocationContact.findByIdAndDelete(id);
+        const deletedLocation = await ContactInfo_1.LocationContact.findByIdAndDelete(id);
         if (!deletedLocation) {
             return res.status(404).json({
                 success: false,
@@ -310,10 +325,11 @@ export const deleteLocationContact = async (req, res) => {
         });
     }
 };
+exports.deleteLocationContact = deleteLocationContact;
 // Business Hours Controllers
-export const getBusinessHours = async (req, res) => {
+const getBusinessHours = async (req, res) => {
     try {
-        const hours = await BusinessHours.find().sort({ order: 1 });
+        const hours = await ContactInfo_1.BusinessHours.find().sort({ order: 1 });
         res.json({
             success: true,
             data: hours
@@ -327,7 +343,8 @@ export const getBusinessHours = async (req, res) => {
         });
     }
 };
-export const createBusinessHours = async (req, res) => {
+exports.getBusinessHours = getBusinessHours;
+const createBusinessHours = async (req, res) => {
     try {
         const { label, schedule, timezone = 'Europe/Paris', isVisible = true, order = 0 } = req.body;
         if (!label || !schedule) {
@@ -336,7 +353,7 @@ export const createBusinessHours = async (req, res) => {
                 message: 'Le label et les horaires sont requis'
             });
         }
-        const businessHours = new BusinessHours({
+        const businessHours = new ContactInfo_1.BusinessHours({
             label,
             schedule,
             timezone,
@@ -357,11 +374,12 @@ export const createBusinessHours = async (req, res) => {
         });
     }
 };
-export const updateBusinessHours = async (req, res) => {
+exports.createBusinessHours = createBusinessHours;
+const updateBusinessHours = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updatedHours = await BusinessHours.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        const updatedHours = await ContactInfo_1.BusinessHours.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!updatedHours) {
             return res.status(404).json({
                 success: false,
@@ -381,10 +399,11 @@ export const updateBusinessHours = async (req, res) => {
         });
     }
 };
-export const deleteBusinessHours = async (req, res) => {
+exports.updateBusinessHours = updateBusinessHours;
+const deleteBusinessHours = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedHours = await BusinessHours.findByIdAndDelete(id);
+        const deletedHours = await ContactInfo_1.BusinessHours.findByIdAndDelete(id);
         if (!deletedHours) {
             return res.status(404).json({
                 success: false,
@@ -404,10 +423,11 @@ export const deleteBusinessHours = async (req, res) => {
         });
     }
 };
+exports.deleteBusinessHours = deleteBusinessHours;
 // Social Media Controllers
-export const getSocialMedia = async (req, res) => {
+const getSocialMedia = async (req, res) => {
     try {
-        const social = await SocialMedia.find().sort({ order: 1 });
+        const social = await ContactInfo_1.SocialMedia.find().sort({ order: 1 });
         res.json({
             success: true,
             data: social
@@ -421,7 +441,8 @@ export const getSocialMedia = async (req, res) => {
         });
     }
 };
-export const createSocialMedia = async (req, res) => {
+exports.getSocialMedia = getSocialMedia;
+const createSocialMedia = async (req, res) => {
     try {
         const { platform, label, url, icon, isVisible = true, order = 0 } = req.body;
         if (!platform || !label || !url) {
@@ -430,7 +451,7 @@ export const createSocialMedia = async (req, res) => {
                 message: 'La plateforme, le label et l\'URL sont requis'
             });
         }
-        const socialMedia = new SocialMedia({
+        const socialMedia = new ContactInfo_1.SocialMedia({
             platform,
             label,
             url,
@@ -452,11 +473,12 @@ export const createSocialMedia = async (req, res) => {
         });
     }
 };
-export const updateSocialMedia = async (req, res) => {
+exports.createSocialMedia = createSocialMedia;
+const updateSocialMedia = async (req, res) => {
     try {
         const { id } = req.params;
         const updates = req.body;
-        const updatedSocial = await SocialMedia.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
+        const updatedSocial = await ContactInfo_1.SocialMedia.findByIdAndUpdate(id, updates, { new: true, runValidators: true });
         if (!updatedSocial) {
             return res.status(404).json({
                 success: false,
@@ -476,10 +498,11 @@ export const updateSocialMedia = async (req, res) => {
         });
     }
 };
-export const deleteSocialMedia = async (req, res) => {
+exports.updateSocialMedia = updateSocialMedia;
+const deleteSocialMedia = async (req, res) => {
     try {
         const { id } = req.params;
-        const deletedSocial = await SocialMedia.findByIdAndDelete(id);
+        const deletedSocial = await ContactInfo_1.SocialMedia.findByIdAndDelete(id);
         if (!deletedSocial) {
             return res.status(404).json({
                 success: false,
@@ -499,10 +522,11 @@ export const deleteSocialMedia = async (req, res) => {
         });
     }
 };
+exports.deleteSocialMedia = deleteSocialMedia;
 // WhatsApp Contact Controllers (Singleton)
-export const getWhatsAppContact = async (req, res) => {
+const getWhatsAppContact = async (req, res) => {
     try {
-        const whatsapp = await WhatsAppContact.findOne();
+        const whatsapp = await ContactInfo_1.WhatsAppContact.findOne();
         res.json({
             success: true,
             data: whatsapp
@@ -516,7 +540,8 @@ export const getWhatsAppContact = async (req, res) => {
         });
     }
 };
-export const createOrUpdateWhatsAppContact = async (req, res) => {
+exports.getWhatsAppContact = getWhatsAppContact;
+const createOrUpdateWhatsAppContact = async (req, res) => {
     try {
         const { label, phone, message, isVisible = true } = req.body;
         if (!label || !phone) {
@@ -526,15 +551,15 @@ export const createOrUpdateWhatsAppContact = async (req, res) => {
             });
         }
         // Check if WhatsApp contact already exists (singleton)
-        const existingWhatsApp = await WhatsAppContact.findOne();
+        const existingWhatsApp = await ContactInfo_1.WhatsAppContact.findOne();
         let whatsappContact;
         if (existingWhatsApp) {
             // Update existing
-            whatsappContact = await WhatsAppContact.findByIdAndUpdate(existingWhatsApp._id, { label, phone, message, isVisible }, { new: true, runValidators: true });
+            whatsappContact = await ContactInfo_1.WhatsAppContact.findByIdAndUpdate(existingWhatsApp._id, { label, phone, message, isVisible }, { new: true, runValidators: true });
         }
         else {
             // Create new
-            whatsappContact = new WhatsAppContact({
+            whatsappContact = new ContactInfo_1.WhatsAppContact({
                 label,
                 phone,
                 message,
@@ -555,9 +580,10 @@ export const createOrUpdateWhatsAppContact = async (req, res) => {
         });
     }
 };
-export const deleteWhatsAppContact = async (req, res) => {
+exports.createOrUpdateWhatsAppContact = createOrUpdateWhatsAppContact;
+const deleteWhatsAppContact = async (req, res) => {
     try {
-        const deletedWhatsApp = await WhatsAppContact.findOneAndDelete();
+        const deletedWhatsApp = await ContactInfo_1.WhatsAppContact.findOneAndDelete();
         if (!deletedWhatsApp) {
             return res.status(404).json({
                 success: false,
@@ -577,4 +603,5 @@ export const deleteWhatsAppContact = async (req, res) => {
         });
     }
 };
+exports.deleteWhatsAppContact = deleteWhatsAppContact;
 //# sourceMappingURL=contactInfo.js.map

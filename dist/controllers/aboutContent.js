@@ -1,10 +1,13 @@
-import { AboutContent } from '../models/AboutContent.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteAboutContent = exports.createOrUpdateAboutContent = exports.getAboutContent = void 0;
+const AboutContent_1 = require("../models/AboutContent");
 // @desc    Get about content
 // @route   GET /api/about-content
 // @access  Public
-export const getAboutContent = async (req, res) => {
+const getAboutContent = async (req, res) => {
     try {
-        const aboutContent = await AboutContent.findOne({ isActive: true });
+        const aboutContent = await AboutContent_1.AboutContent.findOne({ isActive: true });
         res.status(200).json({
             success: true,
             data: aboutContent
@@ -18,10 +21,11 @@ export const getAboutContent = async (req, res) => {
         });
     }
 };
+exports.getAboutContent = getAboutContent;
 // @desc    Create or update about content
 // @route   POST /api/about-content
 // @access  Private (Admin)
-export const createOrUpdateAboutContent = async (req, res) => {
+const createOrUpdateAboutContent = async (req, res) => {
     try {
         const { content } = req.body;
         if (!content || !content.trim()) {
@@ -31,7 +35,7 @@ export const createOrUpdateAboutContent = async (req, res) => {
             });
         }
         // Create new about content (pre-save hook will delete existing ones)
-        const aboutContent = new AboutContent({
+        const aboutContent = new AboutContent_1.AboutContent({
             content: content.trim(),
             isActive: true
         });
@@ -50,12 +54,13 @@ export const createOrUpdateAboutContent = async (req, res) => {
         });
     }
 };
+exports.createOrUpdateAboutContent = createOrUpdateAboutContent;
 // @desc    Delete about content
 // @route   DELETE /api/about-content
 // @access  Private (Admin)
-export const deleteAboutContent = async (req, res) => {
+const deleteAboutContent = async (req, res) => {
     try {
-        await AboutContent.deleteMany({});
+        await AboutContent_1.AboutContent.deleteMany({});
         res.status(200).json({
             success: true,
             message: 'Contenu "À propos" supprimé avec succès'
@@ -69,4 +74,5 @@ export const deleteAboutContent = async (req, res) => {
         });
     }
 };
+exports.deleteAboutContent = deleteAboutContent;
 //# sourceMappingURL=aboutContent.js.map

@@ -1,6 +1,42 @@
-import mongoose, { Schema } from 'mongoose';
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SiteSettings = exports.AboutPage = exports.HomePage = void 0;
+const mongoose_1 = __importStar(require("mongoose"));
 // HomePage Schema
-const homePageSchema = new Schema({
+const homePageSchema = new mongoose_1.Schema({
     heroTitle: {
         type: String,
         required: true,
@@ -57,7 +93,7 @@ const homePageSchema = new Schema({
     timestamps: { createdAt: false, updatedAt: true }
 });
 // Team Member Schema
-const teamMemberSchema = new Schema({
+const teamMemberSchema = new mongoose_1.Schema({
     id: {
         type: String,
         required: true
@@ -94,7 +130,7 @@ const teamMemberSchema = new Schema({
     }
 }, { _id: false });
 // AboutPage Schema
-const aboutPageSchema = new Schema({
+const aboutPageSchema = new mongoose_1.Schema({
     companyDescription: {
         type: String,
         required: true,
@@ -120,7 +156,7 @@ const aboutPageSchema = new Schema({
     timestamps: { createdAt: false, updatedAt: true }
 });
 // Site Settings Schema
-const siteSettingsSchema = new Schema({
+const siteSettingsSchema = new mongoose_1.Schema({
     siteName: {
         type: String,
         required: true,
@@ -197,7 +233,7 @@ const siteSettingsSchema = new Schema({
 }, {
     timestamps: { createdAt: false, updatedAt: true }
 });
-export const HomePage = mongoose.model('HomePage', homePageSchema);
-export const AboutPage = mongoose.model('AboutPage', aboutPageSchema);
-export const SiteSettings = mongoose.model('SiteSettings', siteSettingsSchema);
+exports.HomePage = mongoose_1.default.model('HomePage', homePageSchema);
+exports.AboutPage = mongoose_1.default.model('AboutPage', aboutPageSchema);
+exports.SiteSettings = mongoose_1.default.model('SiteSettings', siteSettingsSchema);
 //# sourceMappingURL=Content.js.map

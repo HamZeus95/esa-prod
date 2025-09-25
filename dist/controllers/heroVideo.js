@@ -1,10 +1,13 @@
-import { HeroVideo } from '../models/HeroVideo.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteHeroVideo = exports.createOrUpdateHeroVideo = exports.getHeroVideo = void 0;
+const HeroVideo_1 = require("../models/HeroVideo");
 // @desc    Get hero video
 // @route   GET /api/hero-video
 // @access  Public
-export const getHeroVideo = async (req, res) => {
+const getHeroVideo = async (req, res) => {
     try {
-        const heroVideo = await HeroVideo.findOne({ isActive: true });
+        const heroVideo = await HeroVideo_1.HeroVideo.findOne({ isActive: true });
         res.status(200).json({
             success: true,
             data: heroVideo
@@ -18,10 +21,11 @@ export const getHeroVideo = async (req, res) => {
         });
     }
 };
+exports.getHeroVideo = getHeroVideo;
 // @desc    Create or update hero video
 // @route   POST /api/hero-video
 // @access  Private (Admin)
-export const createOrUpdateHeroVideo = async (req, res) => {
+const createOrUpdateHeroVideo = async (req, res) => {
     try {
         const { title, description, videoUrl, thumbnailUrl, duration } = req.body;
         // Validate required fields
@@ -38,7 +42,7 @@ export const createOrUpdateHeroVideo = async (req, res) => {
             });
         }
         // Create new hero video (pre-save hook will delete existing ones)
-        const heroVideo = new HeroVideo({
+        const heroVideo = new HeroVideo_1.HeroVideo({
             title,
             description: description || '',
             videoUrl,
@@ -61,12 +65,13 @@ export const createOrUpdateHeroVideo = async (req, res) => {
         });
     }
 };
+exports.createOrUpdateHeroVideo = createOrUpdateHeroVideo;
 // @desc    Delete hero video
 // @route   DELETE /api/hero-video
 // @access  Private (Admin)
-export const deleteHeroVideo = async (req, res) => {
+const deleteHeroVideo = async (req, res) => {
     try {
-        await HeroVideo.deleteMany({});
+        await HeroVideo_1.HeroVideo.deleteMany({});
         res.status(200).json({
             success: true,
             message: 'Vidéo hero supprimée avec succès'
@@ -80,4 +85,5 @@ export const deleteHeroVideo = async (req, res) => {
         });
     }
 };
+exports.deleteHeroVideo = deleteHeroVideo;
 //# sourceMappingURL=heroVideo.js.map

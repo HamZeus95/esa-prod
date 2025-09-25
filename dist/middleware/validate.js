@@ -1,6 +1,9 @@
-import { validationResult } from 'express-validator';
-export const validateRequest = (req, res, next) => {
-    const errors = validationResult(req);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validateRequest = void 0;
+const express_validator_1 = require("express-validator");
+const validateRequest = (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         const errorMessages = errors.array().map(error => error.msg).join(', ');
         res.status(400).json({
@@ -12,4 +15,5 @@ export const validateRequest = (req, res, next) => {
     }
     next();
 };
+exports.validateRequest = validateRequest;
 //# sourceMappingURL=validate.js.map

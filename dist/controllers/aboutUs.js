@@ -1,10 +1,13 @@
-import { AboutUs } from '../models/AboutUs.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteAboutUs = exports.createOrUpdateAboutUs = exports.getAboutUs = void 0;
+const AboutUs_1 = require("../models/AboutUs");
 // @desc    Get About Us content
 // @route   GET /api/about-us
 // @access  Public
-export const getAboutUs = async (req, res) => {
+const getAboutUs = async (req, res) => {
     try {
-        const aboutUs = await AboutUs.findOne({ isActive: true });
+        const aboutUs = await AboutUs_1.AboutUs.findOne({ isActive: true });
         res.status(200).json({
             success: true,
             data: aboutUs
@@ -18,10 +21,11 @@ export const getAboutUs = async (req, res) => {
         });
     }
 };
+exports.getAboutUs = getAboutUs;
 // @desc    Create or update About Us content
 // @route   POST /api/about-us
 // @access  Private (Admin)
-export const createOrUpdateAboutUs = async (req, res) => {
+const createOrUpdateAboutUs = async (req, res) => {
     try {
         const { whoAreWeHtml } = req.body;
         if (!whoAreWeHtml || !whoAreWeHtml.trim()) {
@@ -31,7 +35,7 @@ export const createOrUpdateAboutUs = async (req, res) => {
             });
         }
         // Create new About Us (pre-save hook will delete existing ones)
-        const aboutUs = new AboutUs({
+        const aboutUs = new AboutUs_1.AboutUs({
             whoAreWeHtml: whoAreWeHtml.trim(),
             isActive: true
         });
@@ -50,12 +54,13 @@ export const createOrUpdateAboutUs = async (req, res) => {
         });
     }
 };
+exports.createOrUpdateAboutUs = createOrUpdateAboutUs;
 // @desc    Delete About Us content
 // @route   DELETE /api/about-us
 // @access  Private (Admin)
-export const deleteAboutUs = async (req, res) => {
+const deleteAboutUs = async (req, res) => {
     try {
-        await AboutUs.deleteMany({});
+        await AboutUs_1.AboutUs.deleteMany({});
         res.status(200).json({
             success: true,
             message: 'Contenu "Qui Sommes-Nous" supprimé avec succès'
@@ -69,4 +74,5 @@ export const deleteAboutUs = async (req, res) => {
         });
     }
 };
+exports.deleteAboutUs = deleteAboutUs;
 //# sourceMappingURL=aboutUs.js.map

@@ -1,71 +1,76 @@
-import express from 'express';
-import { body } from 'express-validator';
-import { getClients, getClient, createClient, updateClient, deleteClient } from '../controllers/clients.js';
-import { authenticateToken, requireAdmin } from '../middleware/auth.js';
-import { validateRequest } from '../middleware/validate.js';
-const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const express_validator_1 = require("express-validator");
+const clients_1 = require("../controllers/clients");
+const auth_1 = require("../middleware/auth");
+const validate_1 = require("../middleware/validate");
+const router = express_1.default.Router();
 // @route   GET /api/clients
 // @access  Public
-router.get('/', getClients);
+router.get('/', clients_1.getClients);
 // @route   GET /api/clients/:id
 // @access  Public
-router.get('/:id', getClient);
+router.get('/:id', clients_1.getClient);
 // @route   POST /api/clients
 // @access  Private (Admin)
-router.post('/', authenticateToken, requireAdmin, [
-    body('name')
+router.post('/', auth_1.authenticateToken, auth_1.requireAdmin, [
+    (0, express_validator_1.body)('name')
         .notEmpty()
         .trim()
         .isLength({ min: 1, max: 100 })
         .withMessage('Name is required and must be between 1-100 characters'),
-    body('image')
+    (0, express_validator_1.body)('image')
         .optional()
         .isString()
         .trim()
         .withMessage('Image URL must be a string'),
-    body('type')
+    (0, express_validator_1.body)('type')
         .optional()
         .isIn(['client', 'partner'])
         .withMessage('Type must be either client or partner'),
-    body('order')
+    (0, express_validator_1.body)('order')
         .optional()
         .isInt({ min: 0 })
         .withMessage('Order must be a non-negative integer'),
-    body('isActive')
+    (0, express_validator_1.body)('isActive')
         .optional()
         .isBoolean()
         .withMessage('isActive must be a boolean'),
-    validateRequest
-], createClient);
+    validate_1.validateRequest
+], clients_1.createClient);
 // @route   PUT /api/clients/:id
 // @access  Private (Admin)
-router.put('/:id', authenticateToken, requireAdmin, [
-    body('name')
+router.put('/:id', auth_1.authenticateToken, auth_1.requireAdmin, [
+    (0, express_validator_1.body)('name')
         .optional()
         .trim()
         .isLength({ min: 1, max: 100 })
         .withMessage('Name must be between 1-100 characters'),
-    body('image')
+    (0, express_validator_1.body)('image')
         .optional()
         .isString()
         .trim()
         .withMessage('Image must be a string'),
-    body('type')
+    (0, express_validator_1.body)('type')
         .optional()
         .isIn(['client', 'partner'])
         .withMessage('Type must be either client or partner'),
-    body('order')
+    (0, express_validator_1.body)('order')
         .optional()
         .isInt({ min: 0 })
         .withMessage('Order must be a non-negative integer'),
-    body('isActive')
+    (0, express_validator_1.body)('isActive')
         .optional()
         .isBoolean()
         .withMessage('isActive must be a boolean'),
-    validateRequest
-], updateClient);
+    validate_1.validateRequest
+], clients_1.updateClient);
 // @route   DELETE /api/clients/:id
 // @access  Private (Admin)
-router.delete('/:id', authenticateToken, requireAdmin, deleteClient);
-export default router;
+router.delete('/:id', auth_1.authenticateToken, auth_1.requireAdmin, clients_1.deleteClient);
+exports.default = router;
 //# sourceMappingURL=clients.js.map

@@ -1,9 +1,15 @@
-import { Content } from '../models/GenericContent.js';
-import mongoose from 'mongoose';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getAllContent = exports.updateContentByType = exports.getContentByType = void 0;
+const GenericContent_1 = require("../models/GenericContent");
+const mongoose_1 = __importDefault(require("mongoose"));
 // @desc    Get content by type
 // @route   GET /api/content/:type
 // @access  Public
-export const getContentByType = async (req, res) => {
+const getContentByType = async (req, res) => {
     try {
         const { type } = req.params;
         const validTypes = ['home', 'about', 'services', 'projects', 'contact'];
@@ -14,11 +20,11 @@ export const getContentByType = async (req, res) => {
             });
             return;
         }
-        let content = await Content.findOne({ type }).select('-__v');
+        let content = await GenericContent_1.Content.findOne({ type }).select('-__v');
         // If content doesn't exist, create default content
         if (!content) {
             const defaultContent = getDefaultContent(type);
-            content = new Content(defaultContent);
+            content = new GenericContent_1.Content(defaultContent);
             await content.save();
         }
         res.status(200).json({
@@ -35,10 +41,11 @@ export const getContentByType = async (req, res) => {
         });
     }
 };
+exports.getContentByType = getContentByType;
 // @desc    Update content by type
 // @route   PUT /api/content/:type
 // @access  Private (Admin)
-export const updateContentByType = async (req, res) => {
+const updateContentByType = async (req, res) => {
     try {
         const { type } = req.params;
         const updateData = req.body;
@@ -50,7 +57,7 @@ export const updateContentByType = async (req, res) => {
             });
             return;
         }
-        let content = await Content.findOneAndUpdate({ type }, {
+        let content = await GenericContent_1.Content.findOneAndUpdate({ type }, {
             ...updateData,
             type, // Ensure type doesn't change
             updatedAt: new Date()
@@ -67,7 +74,7 @@ export const updateContentByType = async (req, res) => {
     }
     catch (error) {
         console.error('Update content error:', error);
-        if (error instanceof mongoose.Error.ValidationError) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
             const messages = Object.values(error.errors).map(err => err.message);
             res.status(400).json({
                 success: false,
@@ -81,12 +88,13 @@ export const updateContentByType = async (req, res) => {
         });
     }
 };
+exports.updateContentByType = updateContentByType;
 // @desc    Get all content types
 // @route   GET /api/content
 // @access  Private (Admin)
-export const getAllContent = async (req, res) => {
+const getAllContent = async (req, res) => {
     try {
-        const content = await Content.find({}).select('-__v').sort({ type: 1 });
+        const content = await GenericContent_1.Content.find({}).select('-__v').sort({ type: 1 });
         res.status(200).json({
             success: true,
             data: content,
@@ -101,6 +109,7 @@ export const getAllContent = async (req, res) => {
         });
     }
 };
+exports.getAllContent = getAllContent;
 // Helper function to get default content for each type
 const getDefaultContent = (type) => {
     const defaults = {

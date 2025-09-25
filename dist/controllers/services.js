@@ -1,9 +1,15 @@
-import { Service } from '../models/Service.js';
-import mongoose from 'mongoose';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.reorderServices = exports.toggleServiceStatus = exports.deleteService = exports.updateService = exports.createService = exports.getService = exports.getServices = void 0;
+const Service_1 = require("../models/Service");
+const mongoose_1 = __importDefault(require("mongoose"));
 // @desc    Get all services with filtering
 // @route   GET /api/services
 // @access  Public
-export const getServices = async (req, res) => {
+const getServices = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -29,12 +35,12 @@ export const getServices = async (req, res) => {
             ];
         }
         // Get services with pagination
-        const services = await Service.find(filter)
+        const services = await Service_1.Service.find(filter)
             .sort({ order: 1, createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .select('-__v');
-        const total = await Service.countDocuments(filter);
+        const total = await Service_1.Service.countDocuments(filter);
         const response = {
             success: true,
             data: services,
@@ -56,20 +62,21 @@ export const getServices = async (req, res) => {
         });
     }
 };
+exports.getServices = getServices;
 // @desc    Get single service by ID
 // @route   GET /api/services/:id
 // @access  Public
-export const getService = async (req, res) => {
+const getService = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid service ID'
             });
             return;
         }
-        const service = await Service.findById(id).select('-__v');
+        const service = await Service_1.Service.findById(id).select('-__v');
         if (!service) {
             res.status(404).json({
                 success: false,
@@ -99,14 +106,15 @@ export const getService = async (req, res) => {
         });
     }
 };
+exports.getService = getService;
 // @desc    Create new service
 // @route   POST /api/services
 // @access  Private (Admin)
-export const createService = async (req, res) => {
+const createService = async (req, res) => {
     try {
         const serviceData = req.body;
         // Create new service
-        const service = new Service(serviceData);
+        const service = new Service_1.Service(serviceData);
         await service.save();
         res.status(201).json({
             success: true,
@@ -116,7 +124,7 @@ export const createService = async (req, res) => {
     }
     catch (error) {
         console.error('Create service error:', error);
-        if (error instanceof mongoose.Error.ValidationError) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
             const messages = Object.values(error.errors).map(err => err.message);
             res.status(400).json({
                 success: false,
@@ -130,21 +138,22 @@ export const createService = async (req, res) => {
         });
     }
 };
+exports.createService = createService;
 // @desc    Update service
 // @route   PUT /api/services/:id
 // @access  Private (Admin)
-export const updateService = async (req, res) => {
+const updateService = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid service ID'
             });
             return;
         }
-        const service = await Service.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-__v');
+        const service = await Service_1.Service.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-__v');
         if (!service) {
             res.status(404).json({
                 success: false,
@@ -160,7 +169,7 @@ export const updateService = async (req, res) => {
     }
     catch (error) {
         console.error('Update service error:', error);
-        if (error instanceof mongoose.Error.ValidationError) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
             const messages = Object.values(error.errors).map(err => err.message);
             res.status(400).json({
                 success: false,
@@ -174,20 +183,21 @@ export const updateService = async (req, res) => {
         });
     }
 };
+exports.updateService = updateService;
 // @desc    Delete service
 // @route   DELETE /api/services/:id
 // @access  Private (Admin)
-export const deleteService = async (req, res) => {
+const deleteService = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid service ID'
             });
             return;
         }
-        const service = await Service.findByIdAndDelete(id);
+        const service = await Service_1.Service.findByIdAndDelete(id);
         if (!service) {
             res.status(404).json({
                 success: false,
@@ -208,20 +218,21 @@ export const deleteService = async (req, res) => {
         });
     }
 };
+exports.deleteService = deleteService;
 // @desc    Toggle service active status
 // @route   PATCH /api/services/:id/toggle
 // @access  Private (Admin)
-export const toggleServiceStatus = async (req, res) => {
+const toggleServiceStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid service ID'
             });
             return;
         }
-        const service = await Service.findById(id);
+        const service = await Service_1.Service.findById(id);
         if (!service) {
             res.status(404).json({
                 success: false,
@@ -245,10 +256,11 @@ export const toggleServiceStatus = async (req, res) => {
         });
     }
 };
+exports.toggleServiceStatus = toggleServiceStatus;
 // @desc    Reorder services
 // @route   PUT /api/services/reorder
 // @access  Private (Admin)
-export const reorderServices = async (req, res) => {
+const reorderServices = async (req, res) => {
     try {
         const { serviceIds } = req.body;
         if (!Array.isArray(serviceIds)) {
@@ -260,10 +272,10 @@ export const reorderServices = async (req, res) => {
         }
         // Update order for each service
         const updatePromises = serviceIds.map((id, index) => {
-            if (!mongoose.Types.ObjectId.isValid(id)) {
+            if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
                 throw new Error(`Invalid service ID: ${id}`);
             }
-            return Service.findByIdAndUpdate(id, { order: index + 1 });
+            return Service_1.Service.findByIdAndUpdate(id, { order: index + 1 });
         });
         await Promise.all(updatePromises);
         res.status(200).json({
@@ -279,4 +291,5 @@ export const reorderServices = async (req, res) => {
         });
     }
 };
+exports.reorderServices = reorderServices;
 //# sourceMappingURL=services.js.map

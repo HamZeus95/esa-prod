@@ -1,105 +1,110 @@
-import express from 'express';
-import { body, query } from 'express-validator';
-import { getProjects, getProject, createProject, updateProject, deleteProject, toggleFeatured, getProjectStats, toggleHomePage } from '../controllers/projects.js';
-import { authenticateToken, requireAdmin, optionalAuth } from '../middleware/auth.js';
-import { validateRequest } from '../middleware/validate.js';
-const router = express.Router();
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importDefault(require("express"));
+const express_validator_1 = require("express-validator");
+const projects_1 = require("../controllers/projects");
+const auth_1 = require("../middleware/auth");
+const validate_1 = require("../middleware/validate");
+const router = express_1.default.Router();
 // @route   GET /api/projects/stats
 // @access  Private (Admin)
-router.get('/stats', authenticateToken, requireAdmin, getProjectStats);
+router.get('/stats', auth_1.authenticateToken, auth_1.requireAdmin, projects_1.getProjectStats);
 // @route   GET /api/projects
 // @access  Public (with optional admin features)
-router.get('/', optionalAuth, [
-    query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
-    query('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
-    validateRequest
-], getProjects);
+router.get('/', auth_1.optionalAuth, [
+    (0, express_validator_1.query)('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
+    (0, express_validator_1.query)('limit').optional().isInt({ min: 1, max: 100 }).withMessage('Limit must be between 1 and 100'),
+    validate_1.validateRequest
+], projects_1.getProjects);
 // @route   GET /api/projects/:id
 // @access  Public
-router.get('/:id', getProject);
+router.get('/:id', projects_1.getProject);
 // @route   POST /api/projects
 // @access  Private (Admin)
-router.post('/', authenticateToken, requireAdmin, [
-    body('title')
+router.post('/', auth_1.authenticateToken, auth_1.requireAdmin, [
+    (0, express_validator_1.body)('title')
         .notEmpty()
         .trim()
         .isLength({ min: 1, max: 200 })
         .withMessage('Title is required and must be between 1-200 characters'),
-    body('description')
+    (0, express_validator_1.body)('description')
         .notEmpty()
         .trim()
         .isLength({ min: 1, max: 2000 })
         .withMessage('Description is required and must be between 1-2000 characters'),
-    body('location')
+    (0, express_validator_1.body)('location')
         .notEmpty()
         .trim()
         .withMessage('Location is required'),
-    body('year')
+    (0, express_validator_1.body)('year')
         .isInt({ min: 1900, max: 2100 })
         .withMessage('Year must be a valid year'),
-    body('surface')
+    (0, express_validator_1.body)('surface')
         .notEmpty()
         .trim()
         .withMessage('Surface is required'),
-    body('usage')
+    (0, express_validator_1.body)('usage')
         .notEmpty()
         .withMessage('usage is required'),
-    body('structureType')
+    (0, express_validator_1.body)('structureType')
         .notEmpty()
         .trim()
         .withMessage('Structure type is required'),
-    body('technicalSolutions')
+    (0, express_validator_1.body)('technicalSolutions')
         .isArray()
         .withMessage('Technical solutions must be an array'),
-    body('status')
+    (0, express_validator_1.body)('status')
         .optional()
         .isIn(['draft', 'active', 'completed', 'archived'])
         .withMessage('Invalid status'),
-    body('featured')
+    (0, express_validator_1.body)('featured')
         .optional()
         .isBoolean()
         .withMessage('Featured must be a boolean'),
-    validateRequest
-], createProject);
+    validate_1.validateRequest
+], projects_1.createProject);
 // @route   PUT /api/projects/:id
 // @access  Private (Admin)
-router.put('/:id', authenticateToken, requireAdmin, [
-    body('title')
+router.put('/:id', auth_1.authenticateToken, auth_1.requireAdmin, [
+    (0, express_validator_1.body)('title')
         .optional()
         .trim()
         .isLength({ min: 1, max: 200 })
         .withMessage('Title must be between 1-200 characters'),
-    body('description')
+    (0, express_validator_1.body)('description')
         .optional()
         .trim()
         .isLength({ min: 1, max: 2000 })
         .withMessage('Description must be between 1-2000 characters'),
-    body('year')
+    (0, express_validator_1.body)('year')
         .optional()
         .isInt({ min: 1900, max: 2100 })
         .withMessage('Year must be a valid year'),
-    body('status')
+    (0, express_validator_1.body)('status')
         .optional()
         .isIn(['draft', 'active', 'completed', 'archived'])
         .withMessage('Invalid status'),
-    body('featured')
+    (0, express_validator_1.body)('featured')
         .optional()
         .isBoolean()
         .withMessage('Featured must be a boolean'),
-    body('technicalSolutions')
+    (0, express_validator_1.body)('technicalSolutions')
         .optional()
         .isArray()
         .withMessage('Technical solutions must be an array'),
-    validateRequest
-], updateProject);
+    validate_1.validateRequest
+], projects_1.updateProject);
 // @route   PATCH /api/projects/:id/featured
 // @access  Private (Admin)
-router.patch('/:id/featured', authenticateToken, requireAdmin, toggleFeatured);
+router.patch('/:id/featured', auth_1.authenticateToken, auth_1.requireAdmin, projects_1.toggleFeatured);
 // @route   PATCH /api/projects/:id/homepage
 // @access  Private (Admin)
-router.patch('/:id/homepage', authenticateToken, requireAdmin, toggleHomePage);
+router.patch('/:id/homepage', auth_1.authenticateToken, auth_1.requireAdmin, projects_1.toggleHomePage);
 // @route   DELETE /api/projects/:id
 // @access  Private (Admin)
-router.delete('/:id', authenticateToken, requireAdmin, deleteProject);
-export default router;
+router.delete('/:id', auth_1.authenticateToken, auth_1.requireAdmin, projects_1.deleteProject);
+exports.default = router;
 //# sourceMappingURL=projects.js.map

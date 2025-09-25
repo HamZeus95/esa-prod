@@ -1,8 +1,11 @@
-import { Service } from '../models/Service.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getServiceCategories = exports.deleteService = exports.updateService = exports.createService = exports.getServiceById = exports.getAllServices = void 0;
+const Service_1 = require("../models/Service");
 // @desc    Get all services
 // @route   GET /api/services
 // @access  Public
-export const getAllServices = async (req, res) => {
+const getAllServices = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -15,8 +18,8 @@ export const getAllServices = async (req, res) => {
             query.category = category;
         if (active !== undefined)
             query.active = active === 'true';
-        const total = await Service.countDocuments(query);
-        const services = await Service.find(query)
+        const total = await Service_1.Service.countDocuments(query);
+        const services = await Service_1.Service.find(query)
             .sort({ order: 1, createdAt: -1 })
             .limit(limit)
             .skip(startIndex);
@@ -42,12 +45,13 @@ export const getAllServices = async (req, res) => {
         });
     }
 };
+exports.getAllServices = getAllServices;
 // @desc    Get single service
 // @route   GET /api/services/:id
 // @access  Public
-export const getServiceById = async (req, res) => {
+const getServiceById = async (req, res) => {
     try {
-        const service = await Service.findById(req.params.id);
+        const service = await Service_1.Service.findById(req.params.id);
         if (!service) {
             return res.status(404).json({
                 success: false,
@@ -68,10 +72,11 @@ export const getServiceById = async (req, res) => {
         });
     }
 };
+exports.getServiceById = getServiceById;
 // @desc    Create service
 // @route   POST /api/services
 // @access  Private/Admin
-export const createService = async (req, res) => {
+const createService = async (req, res) => {
     try {
         const { title, description, detailedDescription, category, features, images, order, active } = req.body;
         console.log('🔧 Creating service with data:', {
@@ -89,7 +94,7 @@ export const createService = async (req, res) => {
             });
         }
         // Create service
-        const service = new Service({
+        const service = new Service_1.Service({
             title: title.trim(),
             description: description.trim(),
             detailedDescription: detailedDescription.trim(),
@@ -116,13 +121,14 @@ export const createService = async (req, res) => {
         });
     }
 };
+exports.createService = createService;
 // @desc    Update service
 // @route   PUT /api/services/:id
 // @access  Private/Admin
-export const updateService = async (req, res) => {
+const updateService = async (req, res) => {
     try {
         const { title, description, detailedDescription, category, features, images, order, active } = req.body;
-        const service = await Service.findById(req.params.id);
+        const service = await Service_1.Service.findById(req.params.id);
         if (!service) {
             return res.status(404).json({
                 success: false,
@@ -162,19 +168,20 @@ export const updateService = async (req, res) => {
         });
     }
 };
+exports.updateService = updateService;
 // @desc    Delete service
 // @route   DELETE /api/services/:id
 // @access  Private/Admin
-export const deleteService = async (req, res) => {
+const deleteService = async (req, res) => {
     try {
-        const service = await Service.findById(req.params.id);
+        const service = await Service_1.Service.findById(req.params.id);
         if (!service) {
             return res.status(404).json({
                 success: false,
                 message: 'Service non trouvé'
             });
         }
-        await Service.findByIdAndDelete(req.params.id);
+        await Service_1.Service.findByIdAndDelete(req.params.id);
         res.status(200).json({
             success: true,
             data: null,
@@ -190,10 +197,11 @@ export const deleteService = async (req, res) => {
         });
     }
 };
+exports.deleteService = deleteService;
 // @desc    Get service categories
 // @route   GET /api/services/categories
 // @access  Public
-export const getServiceCategories = async (req, res) => {
+const getServiceCategories = async (req, res) => {
     try {
         const categories = [
             'Structural Design',
@@ -217,4 +225,5 @@ export const getServiceCategories = async (req, res) => {
         });
     }
 };
+exports.getServiceCategories = getServiceCategories;
 //# sourceMappingURL=service.js.map

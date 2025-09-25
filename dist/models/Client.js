@@ -1,5 +1,11 @@
-import mongoose from 'mongoose';
-const clientSchema = new mongoose.Schema({
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Client = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const clientSchema = new mongoose_1.default.Schema({
     name: {
         type: String,
         required: [true, 'Client name is required'],
@@ -29,5 +35,5 @@ const clientSchema = new mongoose.Schema({
 // Index for better query performance
 clientSchema.index({ type: 1, order: 1 });
 clientSchema.index({ isActive: 1 });
-export const Client = mongoose.model('Client', clientSchema);
+exports.Client = mongoose_1.default.model('Client', clientSchema);
 //# sourceMappingURL=Client.js.map

@@ -1,9 +1,15 @@
-import { Project } from '../models/Project.js';
-import mongoose from 'mongoose';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getProjectStats = exports.toggleHomePage = exports.toggleFeatured = exports.deleteProject = exports.updateProject = exports.createProject = exports.getProject = exports.getProjects = void 0;
+const Project_1 = require("../models/Project");
+const mongoose_1 = __importDefault(require("mongoose"));
 // @desc    Get all projects with pagination and filtering
 // @route   GET /api/projects
 // @access  Public
-export const getProjects = async (req, res) => {
+const getProjects = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
@@ -42,12 +48,12 @@ export const getProjects = async (req, res) => {
         }
         console.log("project.ts ~ filter:", filter);
         // Get projects with pagination
-        const projects = await Project.find(filter)
+        const projects = await Project_1.Project.find(filter)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
             .select('-__v');
-        const total = await Project.countDocuments(filter);
+        const total = await Project_1.Project.countDocuments(filter);
         const response = {
             success: true,
             data: projects,
@@ -69,20 +75,21 @@ export const getProjects = async (req, res) => {
         });
     }
 };
+exports.getProjects = getProjects;
 // @desc    Get single project by ID
 // @route   GET /api/projects/:id
 // @access  Public
-export const getProject = async (req, res) => {
+const getProject = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid project ID'
             });
             return;
         }
-        const project = await Project.findById(id).select('-__v');
+        const project = await Project_1.Project.findById(id).select('-__v');
         if (!project) {
             res.status(404).json({
                 success: false,
@@ -104,10 +111,11 @@ export const getProject = async (req, res) => {
         });
     }
 };
+exports.getProject = getProject;
 // @desc    Create new project
 // @route   POST /api/projects
 // @access  Private (Admin)
-export const createProject = async (req, res) => {
+const createProject = async (req, res) => {
     try {
         const projectData = req.body;
         console.log('🏗️ Creating project with data:', {
@@ -116,7 +124,7 @@ export const createProject = async (req, res) => {
             imagesData: projectData.images
         });
         // Create new project
-        const project = new Project(projectData);
+        const project = new Project_1.Project(projectData);
         await project.save();
         console.log('✅ Project saved with images:', project.images?.length || 0);
         res.status(201).json({
@@ -127,7 +135,7 @@ export const createProject = async (req, res) => {
     }
     catch (error) {
         console.error('Create project error:', error);
-        if (error instanceof mongoose.Error.ValidationError) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
             const messages = Object.values(error.errors).map(err => err.message);
             res.status(400).json({
                 success: false,
@@ -141,21 +149,22 @@ export const createProject = async (req, res) => {
         });
     }
 };
+exports.createProject = createProject;
 // @desc    Update project
 // @route   PUT /api/projects/:id
 // @access  Private (Admin)
-export const updateProject = async (req, res) => {
+const updateProject = async (req, res) => {
     try {
         const { id } = req.params;
         const updateData = req.body;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid project ID'
             });
             return;
         }
-        const project = await Project.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-__v');
+        const project = await Project_1.Project.findByIdAndUpdate(id, updateData, { new: true, runValidators: true }).select('-__v');
         if (!project) {
             res.status(404).json({
                 success: false,
@@ -171,7 +180,7 @@ export const updateProject = async (req, res) => {
     }
     catch (error) {
         console.error('Update project error:', error);
-        if (error instanceof mongoose.Error.ValidationError) {
+        if (error instanceof mongoose_1.default.Error.ValidationError) {
             const messages = Object.values(error.errors).map(err => err.message);
             res.status(400).json({
                 success: false,
@@ -185,20 +194,21 @@ export const updateProject = async (req, res) => {
         });
     }
 };
+exports.updateProject = updateProject;
 // @desc    Delete project
 // @route   DELETE /api/projects/:id
 // @access  Private (Admin)
-export const deleteProject = async (req, res) => {
+const deleteProject = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid project ID'
             });
             return;
         }
-        const project = await Project.findByIdAndDelete(id);
+        const project = await Project_1.Project.findByIdAndDelete(id);
         if (!project) {
             res.status(404).json({
                 success: false,
@@ -220,20 +230,21 @@ export const deleteProject = async (req, res) => {
         });
     }
 };
+exports.deleteProject = deleteProject;
 // @desc    Toggle project featured status
 // @route   PATCH /api/projects/:id/featured
 // @access  Private (Admin)
-export const toggleFeatured = async (req, res) => {
+const toggleFeatured = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid project ID'
             });
             return;
         }
-        const project = await Project.findById(id);
+        const project = await Project_1.Project.findById(id);
         if (!project) {
             res.status(404).json({
                 success: false,
@@ -257,20 +268,21 @@ export const toggleFeatured = async (req, res) => {
         });
     }
 };
+exports.toggleFeatured = toggleFeatured;
 // @desc Toggle isHomePage status
 // @route PATCH /api/projects/:id/homepage
 // @access Private (Admin)
-export const toggleHomePage = async (req, res) => {
+const toggleHomePage = async (req, res) => {
     try {
         const { id } = req.params;
-        if (!mongoose.Types.ObjectId.isValid(id)) {
+        if (!mongoose_1.default.Types.ObjectId.isValid(id)) {
             res.status(400).json({
                 success: false,
                 message: 'Invalid project ID'
             });
             return;
         }
-        const project = await Project.findById(id);
+        const project = await Project_1.Project.findById(id);
         if (!project) {
             res.status(404).json({
                 success: false,
@@ -297,12 +309,13 @@ export const toggleHomePage = async (req, res) => {
         }
     }
 };
+exports.toggleHomePage = toggleHomePage;
 // @desc    Get project statistics
 // @route   GET /api/projects/stats
 // @access  Private (Admin)
-export const getProjectStats = async (req, res) => {
+const getProjectStats = async (req, res) => {
     try {
-        const stats = await Project.aggregate([
+        const stats = await Project_1.Project.aggregate([
             {
                 $group: {
                     _id: '$status',
@@ -310,8 +323,8 @@ export const getProjectStats = async (req, res) => {
                 }
             }
         ]);
-        const totalProjects = await Project.countDocuments();
-        const featuredProjects = await Project.countDocuments({ featured: true });
+        const totalProjects = await Project_1.Project.countDocuments();
+        const featuredProjects = await Project_1.Project.countDocuments({ featured: true });
         const statusCounts = stats.reduce((acc, stat) => {
             acc[stat._id] = stat.count;
             return acc;
@@ -334,4 +347,5 @@ export const getProjectStats = async (req, res) => {
         });
     }
 };
+exports.getProjectStats = getProjectStats;
 //# sourceMappingURL=projects.js.map

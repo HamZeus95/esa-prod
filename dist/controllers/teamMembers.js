@@ -1,18 +1,21 @@
-import { TeamMember } from '../models/TeamMember.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteTeamMember = exports.updateTeamMember = exports.createTeamMember = exports.getTeamMemberById = exports.getAllTeamMembers = void 0;
+const TeamMember_1 = require("../models/TeamMember");
 // @desc    Get all team members
 // @route   GET /api/team-members
 // @access  Public
-export const getAllTeamMembers = async (req, res) => {
+const getAllTeamMembers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 50;
         const skip = (page - 1) * limit;
         const query = req.query.includeHidden === 'true' ? {} : { isActive: true };
-        const teamMembers = await TeamMember.find(query)
+        const teamMembers = await TeamMember_1.TeamMember.find(query)
             .sort({ order: 1, name: 1 })
             .skip(skip)
             .limit(limit);
-        const total = await TeamMember.countDocuments(query);
+        const total = await TeamMember_1.TeamMember.countDocuments(query);
         res.status(200).json({
             success: true,
             data: teamMembers,
@@ -32,12 +35,13 @@ export const getAllTeamMembers = async (req, res) => {
         });
     }
 };
+exports.getAllTeamMembers = getAllTeamMembers;
 // @desc    Get team member by ID
 // @route   GET /api/team-members/:id
 // @access  Public
-export const getTeamMemberById = async (req, res) => {
+const getTeamMemberById = async (req, res) => {
     try {
-        const teamMember = await TeamMember.findById(req.params.id);
+        const teamMember = await TeamMember_1.TeamMember.findById(req.params.id);
         if (!teamMember) {
             return res.status(404).json({
                 success: false,
@@ -57,10 +61,11 @@ export const getTeamMemberById = async (req, res) => {
         });
     }
 };
+exports.getTeamMemberById = getTeamMemberById;
 // @desc    Create team member
 // @route   POST /api/team-members
 // @access  Private (Admin)
-export const createTeamMember = async (req, res) => {
+const createTeamMember = async (req, res) => {
     try {
         const { name, position, description, image, email, phone, linkedin, order, isActive, department, hierarchy } = req.body;
         if (!name || !position) {
@@ -69,7 +74,7 @@ export const createTeamMember = async (req, res) => {
                 message: 'Le nom et le poste sont requis'
             });
         }
-        const teamMember = new TeamMember({
+        const teamMember = new TeamMember_1.TeamMember({
             name: name.trim(),
             position: position.trim(),
             description: description?.trim(),
@@ -97,13 +102,14 @@ export const createTeamMember = async (req, res) => {
         });
     }
 };
+exports.createTeamMember = createTeamMember;
 // @desc    Update team member
 // @route   PUT /api/team-members/:id
 // @access  Private (Admin)
-export const updateTeamMember = async (req, res) => {
+const updateTeamMember = async (req, res) => {
     try {
         const { name, position, description, image, email, phone, linkedin, order, isActive, department, hierarchy } = req.body;
-        const teamMember = await TeamMember.findById(req.params.id);
+        const teamMember = await TeamMember_1.TeamMember.findById(req.params.id);
         if (!teamMember) {
             return res.status(404).json({
                 success: false,
@@ -148,12 +154,13 @@ export const updateTeamMember = async (req, res) => {
         });
     }
 };
+exports.updateTeamMember = updateTeamMember;
 // @desc    Delete team member
 // @route   DELETE /api/team-members/:id
 // @access  Private (Admin)
-export const deleteTeamMember = async (req, res) => {
+const deleteTeamMember = async (req, res) => {
     try {
-        const teamMember = await TeamMember.findById(req.params.id);
+        const teamMember = await TeamMember_1.TeamMember.findById(req.params.id);
         if (!teamMember) {
             return res.status(404).json({
                 success: false,
@@ -161,12 +168,12 @@ export const deleteTeamMember = async (req, res) => {
             });
         }
         // Check if this team member has subordinates
-        const subordinates = await TeamMember.find({ managerId: req.params.id });
+        const subordinates = await TeamMember_1.TeamMember.find({ managerId: req.params.id });
         if (subordinates.length > 0) {
             // Update subordinates to remove manager reference
-            await TeamMember.updateMany({ managerId: req.params.id }, { $unset: { managerId: 1 } });
+            await TeamMember_1.TeamMember.updateMany({ managerId: req.params.id }, { $unset: { managerId: 1 } });
         }
-        await TeamMember.findByIdAndDelete(req.params.id);
+        await TeamMember_1.TeamMember.findByIdAndDelete(req.params.id);
         res.status(200).json({
             success: true,
             message: `Membre de l'équipe supprimé avec succès${subordinates.length > 0 ? '. Leurs subordonnés ont été détachés.' : ''}`
@@ -180,4 +187,5 @@ export const deleteTeamMember = async (req, res) => {
         });
     }
 };
+exports.deleteTeamMember = deleteTeamMember;
 //# sourceMappingURL=teamMembers.js.map

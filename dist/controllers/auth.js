@@ -1,12 +1,18 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
-import { User } from '../models/User.js';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetPassword = exports.forgotPassword = exports.resetMustChangePassword = exports.changePassword = exports.getProfile = exports.logoutAll = exports.logout = exports.refreshToken = exports.login = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+const crypto_1 = __importDefault(require("crypto"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
+const User_1 = require("../models/User");
 // @desc    Login user
 // @route   POST /api/auth/login
 // @access  Public
-export const login = async (req, res) => {
+const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         // Validate input
@@ -18,7 +24,7 @@ export const login = async (req, res) => {
             return;
         }
         // Find user by email and include password
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User_1.User.findOne({ email }).select('+password');
         if (!user) {
             res.status(401).json({
                 success: false,
@@ -35,7 +41,7 @@ export const login = async (req, res) => {
             return;
         }
         // Check password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcryptjs_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             res.status(401).json({
                 success: false,
@@ -51,10 +57,10 @@ export const login = async (req, res) => {
             email: user.email,
             role: user.role
         };
-        const accessToken = jwt.sign(tokenPayload, accessTokenSecret, {
+        const accessToken = jsonwebtoken_1.default.sign(tokenPayload, accessTokenSecret, {
             expiresIn: process.env.JWT_ACCESS_EXPIRE || '15m'
         });
-        const refreshToken = jwt.sign(tokenPayload, refreshTokenSecret, {
+        const refreshToken = jsonwebtoken_1.default.sign(tokenPayload, refreshTokenSecret, {
             expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d'
         });
         // Update refresh tokens and last login
@@ -98,10 +104,11 @@ export const login = async (req, res) => {
         });
     }
 };
+exports.login = login;
 // @desc    Refresh access token
 // @route   POST /api/auth/refresh
 // @access  Public
-export const refreshToken = async (req, res) => {
+const refreshToken = async (req, res) => {
     try {
         // Get refresh token from httpOnly cookie or request body (fallback)
         const refreshTokenValue = req.cookies?.refreshToken || req.body?.refreshToken;
@@ -116,7 +123,7 @@ export const refreshToken = async (req, res) => {
         const refreshTokenSecret = process.env.JWT_REFRESH_SECRET || 'fallback_refresh_secret';
         let decoded;
         try {
-            decoded = jwt.verify(refreshTokenValue, refreshTokenSecret);
+            decoded = jsonwebtoken_1.default.verify(refreshTokenValue, refreshTokenSecret);
         }
         catch (jwtError) {
             res.status(401).json({
@@ -126,7 +133,7 @@ export const refreshToken = async (req, res) => {
             return;
         }
         // Find user and check if refresh token exists
-        const user = await User.findById(decoded.userId);
+        const user = await User_1.User.findById(decoded.userId);
         if (!user) {
             res.status(401).json({
                 success: false,
@@ -161,7 +168,7 @@ export const refreshToken = async (req, res) => {
             email: user.email,
             role: user.role
         };
-        const accessToken = jwt.sign(tokenPayload, accessTokenSecret, {
+        const accessToken = jsonwebtoken_1.default.sign(tokenPayload, accessTokenSecret, {
             expiresIn: process.env.JWT_ACCESS_EXPIRE || '15m'
         });
         res.status(200).json({
@@ -171,14 +178,14 @@ export const refreshToken = async (req, res) => {
         });
     }
     catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
+        if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
             res.status(401).json({
                 success: false,
                 message: 'Refresh token expired'
             });
             return;
         }
-        if (error instanceof jwt.JsonWebTokenError) {
+        if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
             res.status(401).json({
                 success: false,
                 message: 'Invalid refresh token'
@@ -192,17 +199,18 @@ export const refreshToken = async (req, res) => {
         });
     }
 };
+exports.refreshToken = refreshToken;
 // @desc    Logout user
 // @route   POST /api/auth/logout
 // @access  Private
-export const logout = async (req, res) => {
+const logout = async (req, res) => {
     try {
         // Get refresh token from httpOnly cookie or request body (fallback)
         const refreshToken = req.cookies?.refreshToken || req.body.refreshToken;
         const user = req.user;
         if (refreshToken && user) {
             // Remove specific refresh token
-            await User.findByIdAndUpdate(user._id, {
+            await User_1.User.findByIdAndUpdate(user._id, {
                 $pull: { refreshTokens: refreshToken }
             });
         }
@@ -226,15 +234,16 @@ export const logout = async (req, res) => {
         });
     }
 };
+exports.logout = logout;
 // @desc    Logout from all devices
 // @route   POST /api/auth/logout-all
 // @access  Private
-export const logoutAll = async (req, res) => {
+const logoutAll = async (req, res) => {
     try {
         const user = req.user;
         if (user) {
             // Clear all refresh tokens
-            await User.findByIdAndUpdate(user._id, {
+            await User_1.User.findByIdAndUpdate(user._id, {
                 refreshTokens: []
             });
         }
@@ -258,10 +267,11 @@ export const logoutAll = async (req, res) => {
         });
     }
 };
+exports.logoutAll = logoutAll;
 // @desc    Get current user profile
 // @route   GET /api/auth/me
 // @access  Private
-export const getProfile = async (req, res) => {
+const getProfile = async (req, res) => {
     try {
         const user = req.user;
         if (!user) {
@@ -285,10 +295,11 @@ export const getProfile = async (req, res) => {
         });
     }
 };
+exports.getProfile = getProfile;
 // @desc    Change user password
 // @route   POST /api/auth/change-password
 // @access  Private
-export const changePassword = async (req, res) => {
+const changePassword = async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
         const userId = req.user?.id;
@@ -309,7 +320,7 @@ export const changePassword = async (req, res) => {
             return;
         }
         // Find user with password field
-        const user = await User.findById(userId).select('+password');
+        const user = await User_1.User.findById(userId).select('+password');
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -318,7 +329,7 @@ export const changePassword = async (req, res) => {
             return;
         }
         // Verify current password
-        const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        const isCurrentPasswordValid = await bcryptjs_1.default.compare(currentPassword, user.password);
         if (!isCurrentPasswordValid) {
             res.status(400).json({
                 success: false,
@@ -327,7 +338,7 @@ export const changePassword = async (req, res) => {
             return;
         }
         // Check if new password is the same as current
-        const isSamePassword = await bcrypt.compare(newPassword, user.password);
+        const isSamePassword = await bcryptjs_1.default.compare(newPassword, user.password);
         if (isSamePassword) {
             res.status(400).json({
                 success: false,
@@ -337,9 +348,9 @@ export const changePassword = async (req, res) => {
         }
         // Hash new password
         const saltRounds = 12;
-        const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
+        const hashedNewPassword = await bcryptjs_1.default.hash(newPassword, saltRounds);
         // Update password and mark that password has been changed
-        await User.findByIdAndUpdate(userId, {
+        await User_1.User.findByIdAndUpdate(userId, {
             password: hashedNewPassword,
             mustChangePassword: false,
             updatedAt: new Date()
@@ -357,8 +368,9 @@ export const changePassword = async (req, res) => {
         });
     }
 };
+exports.changePassword = changePassword;
 // TEMPORARY: Helper function to reset mustChangePassword for testing
-export const resetMustChangePassword = async (req, res) => {
+const resetMustChangePassword = async (req, res) => {
     try {
         const userId = req.user?.id;
         if (!userId) {
@@ -368,7 +380,7 @@ export const resetMustChangePassword = async (req, res) => {
             });
             return;
         }
-        await User.findByIdAndUpdate(userId, {
+        await User_1.User.findByIdAndUpdate(userId, {
             mustChangePassword: false
         });
         res.status(200).json({
@@ -384,9 +396,10 @@ export const resetMustChangePassword = async (req, res) => {
         });
     }
 };
+exports.resetMustChangePassword = resetMustChangePassword;
 // Email transporter configuration
 const createTransporter = () => {
-    return nodemailer.createTransport({
+    return nodemailer_1.default.createTransport({
         host: process.env.EMAIL_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.EMAIL_PORT || '587'),
         secure: process.env.EMAIL_PORT === '465',
@@ -402,7 +415,7 @@ const createTransporter = () => {
 // @desc    Request password reset
 // @route   POST /api/auth/forgot-password
 // @access  Public
-export const forgotPassword = async (req, res) => {
+const forgotPassword = async (req, res) => {
     try {
         const { email } = req.body;
         if (!email) {
@@ -413,7 +426,7 @@ export const forgotPassword = async (req, res) => {
             return;
         }
         // Find user by email
-        const user = await User.findOne({ email });
+        const user = await User_1.User.findOne({ email });
         if (!user) {
             // Don't reveal if email exists or not for security
             res.status(200).json({
@@ -431,8 +444,8 @@ export const forgotPassword = async (req, res) => {
             return;
         }
         // Generate reset token
-        const resetToken = crypto.randomBytes(32).toString('hex');
-        const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        const resetToken = crypto_1.default.randomBytes(32).toString('hex');
+        const hashedToken = crypto_1.default.createHash('sha256').update(resetToken).digest('hex');
         // Set reset token and expiration (10 minutes)
         user.resetPasswordToken = hashedToken;
         user.resetPasswordExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
@@ -494,10 +507,11 @@ export const forgotPassword = async (req, res) => {
         });
     }
 };
+exports.forgotPassword = forgotPassword;
 // @desc    Reset password with token
 // @route   POST /api/auth/reset-password/:token
 // @access  Public
-export const resetPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
     try {
         const { token } = req.params;
         const { password, confirmPassword } = req.body;
@@ -523,9 +537,9 @@ export const resetPassword = async (req, res) => {
             return;
         }
         // Hash the token to compare with stored hash
-        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+        const hashedToken = crypto_1.default.createHash('sha256').update(token).digest('hex');
         // Find user with valid reset token
-        const user = await User.findOne({
+        const user = await User_1.User.findOne({
             resetPasswordToken: hashedToken,
             resetPasswordExpires: { $gt: Date.now() }
         });
@@ -557,4 +571,5 @@ export const resetPassword = async (req, res) => {
         });
     }
 };
+exports.resetPassword = resetPassword;
 //# sourceMappingURL=auth.js.map

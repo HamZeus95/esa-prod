@@ -1,4 +1,7 @@
-export const errorHandler = (err, req, res, next) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.errorHandler = void 0;
+const errorHandler = (err, req, res, next) => {
     let error = { ...err };
     error.message = err.message;
     // Log error
@@ -49,4 +52,5 @@ export const errorHandler = (err, req, res, next) => {
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     });
 };
+exports.errorHandler = errorHandler;
 //# sourceMappingURL=errorHandler.js.map

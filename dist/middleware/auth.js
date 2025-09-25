@@ -1,6 +1,12 @@
-import jwt from 'jsonwebtoken';
-import { User } from '../models/User.js';
-export const authenticateToken = async (req, res, next) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.requirePasswordChange = exports.optionalAuth = exports.requireAdmin = exports.authenticateToken = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const User_1 = require("../models/User");
+const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
@@ -12,8 +18,8 @@ export const authenticateToken = async (req, res, next) => {
             return;
         }
         const accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'fallback_secret';
-        const decoded = jwt.verify(token, accessTokenSecret);
-        const user = await User.findById(decoded.userId).select('-password');
+        const decoded = jsonwebtoken_1.default.verify(token, accessTokenSecret);
+        const user = await User_1.User.findById(decoded.userId).select('-password');
         if (!user) {
             res.status(401).json({
                 success: false,
@@ -32,14 +38,14 @@ export const authenticateToken = async (req, res, next) => {
         next();
     }
     catch (error) {
-        if (error instanceof jwt.TokenExpiredError) {
+        if (error instanceof jsonwebtoken_1.default.TokenExpiredError) {
             res.status(401).json({
                 success: false,
                 message: 'Access token expired'
             });
             return;
         }
-        if (error instanceof jwt.JsonWebTokenError) {
+        if (error instanceof jsonwebtoken_1.default.JsonWebTokenError) {
             res.status(401).json({
                 success: false,
                 message: 'Invalid access token'
@@ -52,7 +58,8 @@ export const authenticateToken = async (req, res, next) => {
         });
     }
 };
-export const requireAdmin = (req, res, next) => {
+exports.authenticateToken = authenticateToken;
+const requireAdmin = (req, res, next) => {
     if (!req.user || req.user.role !== 'admin') {
         res.status(403).json({
             success: false,
@@ -62,8 +69,9 @@ export const requireAdmin = (req, res, next) => {
     }
     next();
 };
+exports.requireAdmin = requireAdmin;
 // Optional authentication - doesn't fail if no token provided
-export const optionalAuth = async (req, res, next) => {
+const optionalAuth = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
@@ -73,8 +81,8 @@ export const optionalAuth = async (req, res, next) => {
             return;
         }
         const accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'fallback_secret';
-        const decoded = jwt.verify(token, accessTokenSecret);
-        const user = await User.findById(decoded.userId).select('-password');
+        const decoded = jsonwebtoken_1.default.verify(token, accessTokenSecret);
+        const user = await User_1.User.findById(decoded.userId).select('-password');
         if (user && user.status === 'active') {
             req.user = user;
         }
@@ -85,8 +93,9 @@ export const optionalAuth = async (req, res, next) => {
         next();
     }
 };
+exports.optionalAuth = optionalAuth;
 // Middleware to check if user must change password
-export const requirePasswordChange = async (req, res, next) => {
+const requirePasswordChange = async (req, res, next) => {
     try {
         const user = req.user;
         if (!user) {
@@ -130,4 +139,5 @@ export const requirePasswordChange = async (req, res, next) => {
         });
     }
 };
+exports.requirePasswordChange = requirePasswordChange;
 //# sourceMappingURL=auth.js.map

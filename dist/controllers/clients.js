@@ -1,8 +1,11 @@
-import { Client } from '../models/Client.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteClient = exports.updateClient = exports.createClient = exports.getClient = exports.getClients = void 0;
+const Client_1 = require("../models/Client");
 // @desc    Get all clients/partners
 // @route   GET /api/clients
 // @access  Public
-export const getClients = async (req, res) => {
+const getClients = async (req, res) => {
     try {
         const { type, active } = req.query;
         // Build filter query
@@ -17,7 +20,7 @@ export const getClients = async (req, res) => {
             // By default, only show active clients for public access
             filter.isActive = true;
         }
-        const clients = await Client.find(filter)
+        const clients = await Client_1.Client.find(filter)
             .sort({ order: 1, createdAt: -1 })
             .lean();
         const response = {
@@ -35,12 +38,13 @@ export const getClients = async (req, res) => {
         });
     }
 };
+exports.getClients = getClients;
 // @desc    Get single client/partner
 // @route   GET /api/clients/:id
 // @access  Public
-export const getClient = async (req, res) => {
+const getClient = async (req, res) => {
     try {
-        const client = await Client.findById(req.params.id).lean();
+        const client = await Client_1.Client.findById(req.params.id).lean();
         if (!client) {
             res.status(404).json({
                 success: false,
@@ -63,12 +67,13 @@ export const getClient = async (req, res) => {
         });
     }
 };
+exports.getClient = getClient;
 // @desc    Create new client/partner
 // @route   POST /api/clients
 // @access  Private (Admin)
-export const createClient = async (req, res) => {
+const createClient = async (req, res) => {
     try {
-        const client = await Client.create(req.body);
+        const client = await Client_1.Client.create(req.body);
         const response = {
             success: true,
             data: client,
@@ -93,12 +98,13 @@ export const createClient = async (req, res) => {
         });
     }
 };
+exports.createClient = createClient;
 // @desc    Update client/partner
 // @route   PUT /api/clients/:id
 // @access  Private (Admin)
-export const updateClient = async (req, res) => {
+const updateClient = async (req, res) => {
     try {
-        const client = await Client.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).lean();
+        const client = await Client_1.Client.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }).lean();
         if (!client) {
             res.status(404).json({
                 success: false,
@@ -130,12 +136,13 @@ export const updateClient = async (req, res) => {
         });
     }
 };
+exports.updateClient = updateClient;
 // @desc    Delete client/partner
 // @route   DELETE /api/clients/:id
 // @access  Private (Admin)
-export const deleteClient = async (req, res) => {
+const deleteClient = async (req, res) => {
     try {
-        const client = await Client.findByIdAndDelete(req.params.id);
+        const client = await Client_1.Client.findByIdAndDelete(req.params.id);
         if (!client) {
             res.status(404).json({
                 success: false,
@@ -158,4 +165,5 @@ export const deleteClient = async (req, res) => {
         });
     }
 };
+exports.deleteClient = deleteClient;
 //# sourceMappingURL=clients.js.map

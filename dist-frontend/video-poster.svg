@@ -1,0 +1,78 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#gradient)"/>
+  
+  <!-- Grid pattern for engineering aesthetic -->
+  <defs>
+    <pattern id="grid" width="100" height="100" patternUnits="userSpaceOnUse">
+      <path d="M 100 0 L 0 0 0 100" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f1419;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#1a2332;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f1419;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="1920" height="1080" fill="url(#grid)"/>
+  
+  <!-- Main content area -->
+  <rect x="160" y="200" width="1600" height="680" fill="rgba(255, 107, 53, 0.02)" stroke="rgba(255, 107, 53, 0.1)" stroke-width="1"/>
+  
+  <!-- ESA Logo Area -->
+  <circle cx="960" cy="400" r="80" fill="rgba(255, 107, 53, 0.15)" stroke="#FF6B35" stroke-width="3"/>
+  <text x="960" y="420" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="bold" fill="#FF6B35">ESA</text>
+  
+  <!-- Main heading -->
+  <text x="960" y="520" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="300" fill="rgba(255,255,255,0.9)">Bureau d'Études Structures</text>
+  
+  <!-- Subheading -->
+  <text x="960" y="580" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" fill="rgba(255,255,255,0.7)">Excellence en Ingénierie Structurelle</text>
+  
+  <!-- Services -->
+  <text x="960" y="640" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(255,255,255,0.6)">Structures Métalliques • Béton Armé • Calculs Spécifiques</text>
+  
+  <!-- Decorative line -->
+  <rect x="660" y="680" width="600" height="1" fill="url(#gradient2)"/>
+  <defs>
+    <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:transparent" />
+      <stop offset="50%" style="stop-color:#FF6B35" />
+      <stop offset="100%" style="stop-color:transparent" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Bottom text -->
+  <text x="960" y="720" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="rgba(255,255,255,0.5)">Votre partenaire de confiance en ingénierie structurelle</text>
+  
+  <!-- Corner elements -->
+  <g stroke="rgba(255, 107, 53, 0.4)" stroke-width="2" fill="none">
+    <!-- Top left -->
+    <path d="M 200 240 L 200 200 L 240 200"/>
+    <path d="M 200 250 L 200 280"/>
+    <path d="M 210 240 L 240 240"/>
+    
+    <!-- Top right -->
+    <path d="M 1720 240 L 1720 200 L 1680 200"/>
+    <path d="M 1720 250 L 1720 280"/>
+    <path d="M 1710 240 L 1680 240"/>
+    
+    <!-- Bottom left -->
+    <path d="M 200 840 L 200 880 L 240 880"/>
+    <path d="M 200 830 L 200 800"/>
+    <path d="M 210 840 L 240 840"/>
+    
+    <!-- Bottom right -->
+    <path d="M 1720 840 L 1720 880 L 1680 880"/>
+    <path d="M 1720 830 L 1720 800"/>
+    <path d="M 1710 840 L 1680 840"/>
+  </g>
+  
+  <!-- Technical elements -->
+  <g stroke="rgba(255, 107, 53, 0.2)" stroke-width="1" fill="none">
+    <circle cx="300" cy="300" r="40"/>
+    <circle cx="1620" cy="780" r="40"/>
+    <rect x="260" y="260" width="80" height="80"/>
+    <rect x="1580" y="740" width="80" height="80"/>
+  </g>
+</svg>

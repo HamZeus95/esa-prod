@@ -1,18 +1,24 @@
-import { User } from '../models/User.js';
-import crypto from 'crypto';
-import nodemailer from 'nodemailer';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetUserPassword = exports.deleteUser = exports.updateUser = exports.createUser = exports.getUserById = exports.getUsers = void 0;
+const User_1 = require("../models/User");
+const crypto_1 = __importDefault(require("crypto"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
 // Get all users (admin only)
-export const getUsers = async (req, res) => {
+const getUsers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
         const skip = (page - 1) * limit;
-        const users = await User.find()
+        const users = await User_1.User.find()
             .select('-refreshTokens')
             .sort({ createdAt: -1 })
             .limit(limit)
             .skip(skip);
-        const totalUsers = await User.countDocuments();
+        const totalUsers = await User_1.User.countDocuments();
         const totalPages = Math.ceil(totalUsers / limit);
         res.status(200).json({
             success: true,
@@ -33,10 +39,11 @@ export const getUsers = async (req, res) => {
         });
     }
 };
+exports.getUsers = getUsers;
 // Get user by ID (admin only)
-export const getUserById = async (req, res) => {
+const getUserById = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-refreshTokens');
+        const user = await User_1.User.findById(req.params.id).select('-refreshTokens');
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -57,12 +64,13 @@ export const getUserById = async (req, res) => {
         });
     }
 };
+exports.getUserById = getUserById;
 // Create new user (admin only)
-export const createUser = async (req, res) => {
+const createUser = async (req, res) => {
     try {
         const { email, name, role } = req.body;
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User_1.User.findOne({ email });
         if (existingUser) {
             res.status(400).json({
                 success: false,
@@ -71,9 +79,9 @@ export const createUser = async (req, res) => {
             return;
         }
         // Generate temporary password
-        const temporaryPassword = crypto.randomBytes(8).toString('hex');
+        const temporaryPassword = crypto_1.default.randomBytes(8).toString('hex');
         // Create user with temporary password (will be hashed by pre-save middleware)
-        const user = new User({
+        const user = new User_1.User({
             email,
             name,
             role: role || 'user',
@@ -86,7 +94,7 @@ export const createUser = async (req, res) => {
         // Send email with temporary password
         await sendTemporaryPasswordEmail(email, name, temporaryPassword);
         // Return user without password and refresh tokens
-        const userResponse = await User.findById(user._id).select('-refreshTokens -password');
+        const userResponse = await User_1.User.findById(user._id).select('-refreshTokens -password');
         res.status(201).json({
             success: true,
             data: userResponse,
@@ -101,8 +109,9 @@ export const createUser = async (req, res) => {
         });
     }
 };
+exports.createUser = createUser;
 // Update user (admin only)
-export const updateUser = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         const { id } = req.params;
         const { email, name, role, status } = req.body;
@@ -122,7 +131,7 @@ export const updateUser = async (req, res) => {
             });
             return;
         }
-        const user = await User.findByIdAndUpdate(id, { email, name, role, status }, { new: true, runValidators: true }).select('-refreshTokens');
+        const user = await User_1.User.findByIdAndUpdate(id, { email, name, role, status }, { new: true, runValidators: true }).select('-refreshTokens');
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -144,8 +153,9 @@ export const updateUser = async (req, res) => {
         });
     }
 };
+exports.updateUser = updateUser;
 // Delete user (admin only)
-export const deleteUser = async (req, res) => {
+const deleteUser = async (req, res) => {
     try {
         const { id } = req.params;
         // Don't allow admin to delete themselves
@@ -156,7 +166,7 @@ export const deleteUser = async (req, res) => {
             });
             return;
         }
-        const user = await User.findByIdAndDelete(id);
+        const user = await User_1.User.findByIdAndDelete(id);
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -177,11 +187,12 @@ export const deleteUser = async (req, res) => {
         });
     }
 };
+exports.deleteUser = deleteUser;
 // Reset user password (admin only)
-export const resetUserPassword = async (req, res) => {
+const resetUserPassword = async (req, res) => {
     try {
         const { id } = req.params;
-        const user = await User.findById(id);
+        const user = await User_1.User.findById(id);
         if (!user) {
             res.status(404).json({
                 success: false,
@@ -190,7 +201,7 @@ export const resetUserPassword = async (req, res) => {
             return;
         }
         // Generate new temporary password
-        const temporaryPassword = crypto.randomBytes(8).toString('hex');
+        const temporaryPassword = crypto_1.default.randomBytes(8).toString('hex');
         user.password = temporaryPassword;
         await user.save();
         // Send email with new temporary password
@@ -208,6 +219,7 @@ export const resetUserPassword = async (req, res) => {
         });
     }
 };
+exports.resetUserPassword = resetUserPassword;
 // Helper function to send temporary password email
 const sendTemporaryPasswordEmail = async (email, name, password) => {
     try {
@@ -218,7 +230,7 @@ const sendTemporaryPasswordEmail = async (email, name, password) => {
             return;
         }
         // Configure nodemailer using environment variables
-        const transporter = nodemailer.createTransport({
+        const transporter = nodemailer_1.default.createTransport({
             host: process.env.EMAIL_HOST,
             port: parseInt(process.env.EMAIL_PORT || '587'),
             secure: process.env.EMAIL_PORT === '465', // true for 465, false for other ports

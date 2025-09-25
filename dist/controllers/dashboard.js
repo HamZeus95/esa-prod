@@ -1,33 +1,36 @@
-import { Project } from '../models/Project.js';
-import { ContactMessage } from '../models/ContactMessage.js';
-import { User } from '../models/User.js';
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getSystemHealth = exports.getRecentActivity = exports.getDashboardStats = void 0;
+const Project_1 = require("../models/Project");
+const ContactMessage_1 = require("../models/ContactMessage");
+const User_1 = require("../models/User");
 // @desc    Get dashboard statistics
 // @route   GET /api/dashboard/stats
 // @access  Private (Admin)
-export const getDashboardStats = async (req, res) => {
+const getDashboardStats = async (req, res) => {
     try {
         // Project statistics
-        const totalProjects = await Project.countDocuments();
-        const activeProjects = await Project.countDocuments({ status: 'active' });
-        const completedProjects = await Project.countDocuments({ status: 'completed' });
-        const featuredProjects = await Project.countDocuments({ featured: true });
+        const totalProjects = await Project_1.Project.countDocuments();
+        const activeProjects = await Project_1.Project.countDocuments({ status: 'active' });
+        const completedProjects = await Project_1.Project.countDocuments({ status: 'completed' });
+        const featuredProjects = await Project_1.Project.countDocuments({ featured: true });
         // Contact statistics
-        const totalMessages = await ContactMessage.countDocuments();
-        const unreadMessages = await ContactMessage.countDocuments({ status: 'unread' });
-        const recentMessages = await ContactMessage.countDocuments({
+        const totalMessages = await ContactMessage_1.ContactMessage.countDocuments();
+        const unreadMessages = await ContactMessage_1.ContactMessage.countDocuments({ status: 'unread' });
+        const recentMessages = await ContactMessage_1.ContactMessage.countDocuments({
             createdAt: { $gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) }
         });
         // User statistics
-        const totalUsers = await User.countDocuments();
-        const activeUsers = await User.countDocuments({ status: 'active' });
+        const totalUsers = await User_1.User.countDocuments();
+        const activeUsers = await User_1.User.countDocuments({ status: 'active' });
         // Recent projects (last 5)
-        const recentProjects = await Project.find()
+        const recentProjects = await Project_1.Project.find()
             .sort({ createdAt: -1 })
             .limit(5)
             .select('title status createdAt featured')
             .lean();
         // Recent messages (last 5)
-        const recentContactMessages = await ContactMessage.find()
+        const recentContactMessages = await ContactMessage_1.ContactMessage.find()
             .sort({ createdAt: -1 })
             .limit(5)
             .select('name email projectType status priority createdAt')
@@ -35,7 +38,7 @@ export const getDashboardStats = async (req, res) => {
         // Monthly project creation stats (last 12 months)
         const twelveMonthsAgo = new Date();
         twelveMonthsAgo.setMonth(twelveMonthsAgo.getMonth() - 12);
-        const monthlyProjects = await Project.aggregate([
+        const monthlyProjects = await Project_1.Project.aggregate([
             {
                 $match: {
                     createdAt: { $gte: twelveMonthsAgo }
@@ -55,7 +58,7 @@ export const getDashboardStats = async (req, res) => {
             }
         ]);
         // Monthly contact stats (last 12 months)
-        const monthlyContacts = await ContactMessage.aggregate([
+        const monthlyContacts = await ContactMessage_1.ContactMessage.aggregate([
             {
                 $match: {
                     createdAt: { $gte: twelveMonthsAgo }
@@ -75,7 +78,7 @@ export const getDashboardStats = async (req, res) => {
             }
         ]);
         // Project status distribution
-        const projectStatusStats = await Project.aggregate([
+        const projectStatusStats = await Project_1.Project.aggregate([
             {
                 $group: {
                     _id: '$status',
@@ -84,7 +87,7 @@ export const getDashboardStats = async (req, res) => {
             }
         ]);
         // Contact priority distribution
-        const contactPriorityStats = await ContactMessage.aggregate([
+        const contactPriorityStats = await ContactMessage_1.ContactMessage.aggregate([
             {
                 $group: {
                     _id: '$priority',
@@ -144,16 +147,17 @@ export const getDashboardStats = async (req, res) => {
         });
     }
 };
+exports.getDashboardStats = getDashboardStats;
 // @desc    Get recent activity
 // @route   GET /api/dashboard/activity
 // @access  Private (Admin)
-export const getRecentActivity = async (req, res) => {
+const getRecentActivity = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 10;
         const days = parseInt(req.query.days) || 7;
         const dateFilter = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
         // Get recent projects
-        const recentProjects = await Project.find({
+        const recentProjects = await Project_1.Project.find({
             createdAt: { $gte: dateFilter }
         })
             .sort({ createdAt: -1 })
@@ -161,7 +165,7 @@ export const getRecentActivity = async (req, res) => {
             .select('title status createdAt')
             .lean();
         // Get recent contacts
-        const recentContacts = await ContactMessage.find({
+        const recentContacts = await ContactMessage_1.ContactMessage.find({
             createdAt: { $gte: dateFilter }
         })
             .sort({ createdAt: -1 })
@@ -198,10 +202,11 @@ export const getRecentActivity = async (req, res) => {
         });
     }
 };
+exports.getRecentActivity = getRecentActivity;
 // @desc    Get system health
 // @route   GET /api/dashboard/health
 // @access  Private (Admin)
-export const getSystemHealth = async (req, res) => {
+const getSystemHealth = async (req, res) => {
     try {
         const health = {
             status: 'healthy',
@@ -226,7 +231,7 @@ export const getSystemHealth = async (req, res) => {
         };
         // Test database connection
         const dbStartTime = Date.now();
-        await Project.findOne().limit(1);
+        await Project_1.Project.findOne().limit(1);
         health.database.responseTime = Date.now() - dbStartTime;
         res.status(200).json({
             success: true,
@@ -247,4 +252,5 @@ export const getSystemHealth = async (req, res) => {
         });
     }
 };
+exports.getSystemHealth = getSystemHealth;
 //# sourceMappingURL=dashboard.js.map
